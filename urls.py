@@ -9,6 +9,31 @@ github_user = "virakie"
 repo_name = "portfolio-assets"
 branch = "main"
 
+# --- RENAME: replace spaces with underscores in all file/folder names ---
+print("Checking for spaces in filenames...\n")
+
+# Walk bottom-up so renaming folders doesn't break subpaths
+for root, dirs, files in os.walk(repo_path, topdown=False):
+    # Rename files
+    for name in files:
+        if " " in name:
+            old = os.path.join(root, name)
+            new = os.path.join(root, name.replace(" ", "_"))
+            os.rename(old, new)
+            print(f"Renamed: {name} → {name.replace(' ', '_')}")
+
+    # Rename folders (skip .git)
+    for d in dirs:
+        if d == ".git":
+            continue
+        if " " in d:
+            old = os.path.join(root, d)
+            new = os.path.join(root, d.replace(" ", "_"))
+            os.rename(old, new)
+            print(f"Renamed folder: {d} → {d.replace(' ', '_')}")
+
+print("\nDone checking.\n")
+
 # --- GIT PUSH ---
 os.chdir(repo_path)
 
@@ -35,9 +60,8 @@ for root, dirs, files in os.walk(repo_path):
             url = f"https://cdn.jsdelivr.net/gh/{github_user}/{repo_name}@{branch}/{rel_path}"
             projects[project].append((rel_path, url))
 
-# --- BUILD MARKDOWN (preserving original folder name casing) ---
+# --- BUILD MARKDOWN ---
 lines = []
-lines.append("# Portfolio Assets\n")
 
 for project in sorted(projects.keys()):
     lines.append(f"## {project}\n")
