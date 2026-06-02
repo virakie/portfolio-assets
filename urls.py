@@ -52,7 +52,7 @@ projects = defaultdict(list)
 for root, dirs, files in os.walk(repo_path):
     dirs[:] = [d for d in dirs if d != ".git"]
     for file in files:
-        if file.endswith((".mp4", ".webm")):
+        if file.endswith((".mp4", ".jpg", ".webm")):
             rel_path = os.path.relpath(os.path.join(root, file), repo_path)
             rel_path = rel_path.replace("\\", "/")
             parts = rel_path.split("/")
